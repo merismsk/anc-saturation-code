@@ -1,0 +1,51 @@
+model:
+  type: "filterbank_attention"
+  filter_order: 64
+  fusion:
+    method: attention
+    embed_dim: 64
+    num_heads: 4
+    num_layers: 4
+    dropout: 0.1
+  filter_bank:
+    K: 16
+    trainable_filters: true
+    temperature_start: 2.0
+    temperature_end: 0.5
+    residual_scale_init: 0.1
+    gate_hidden_dim: 64
+    residual_hidden_dims: [128, 64, 32]
+    residual_dropout: 0.1
+  controller:
+    type: mlp
+    hidden_dims: [128, 64]
+  fxlms:
+    mu: 0.01
+    mu_real: 0.0001
+
+training:
+  epochs: 50
+  num_scenarios: 100
+  batch_size: 48
+  chunk_size: 512
+  chunk_stride: 256
+  lr: 0.0005
+  weight_decay: 0.0001
+  patience: 15
+  lambda_sparse: 0.01
+  lambda_entropy: 0.005
+  mismatch_schedule:
+    "0.0": 0.0
+    "0.3": 0.05
+    "0.6": 0.15
+    "1.0": 0.25
+
+simulation:
+  fs: 16000
+  duration: 2.0
+  seed: 42
+  sensors:
+    mic_noise_std: 0.01
+    accel_noise_std: 0.02
+    accel_lowpass_cutoff: 500
+    vibration_coupling: 0.3
